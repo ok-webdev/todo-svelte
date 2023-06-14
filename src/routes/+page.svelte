@@ -28,6 +28,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>TodoApp</title>
+</svelte:head>
+
 <h1>Todo App</h1>
 
 <NewTodo on:addTodo={addTodo} />
