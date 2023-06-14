@@ -1,11 +1,9 @@
-<!-- src/routes/index.svelte -->
-
 <script lang="ts">
 	import { type Todo, TodoService } from '../app/todos';
 	import { onMount } from 'svelte';
 	import TodoList from '../components/TodoList.svelte';
+	import NewTodo from '../components/NewTodo.svelte';
 
-	let newTodoTitle = '';
 	let todoService: TodoService;
 	let todos: Todo[] = [];
 
@@ -14,12 +12,9 @@
 		todos = todoService.getTodos();
 	});
 
-	function addTodo(): void {
-		if (newTodoTitle.trim() !== '') {
-			todoService.addTodo(newTodoTitle);
-			todos = todoService.getTodos();
-			newTodoTitle = '';
-		}
+	function addTodo(e: CustomEvent): void {
+		todoService.addTodo(e.detail);
+		todos = todoService.getTodos();
 	}
 
 	function toggleTodoCompleted(e: CustomEvent): void {
@@ -35,7 +30,6 @@
 
 <h1>Todo App</h1>
 
-<input type="text" placeholder="Enter a new todo..." bind:value={newTodoTitle} />
-<button on:click={addTodo}>Add Todo</button>
+<NewTodo on:addTodo={addTodo} />
 
 <TodoList {todos} on:toggle={toggleTodoCompleted} on:remove={removeTodo} />
