@@ -3,6 +3,7 @@
 <script lang="ts">
 	import { type Todo, TodoService } from '../app/todos';
 	import { onMount } from 'svelte';
+	import TodoList from '../components/TodoList.svelte';
 
 	let newTodoTitle = '';
 	let todoService: TodoService;
@@ -13,7 +14,7 @@
 		todos = todoService.getTodos();
 	});
 
-	function addTodo() {
+	function addTodo(): void {
 		if (newTodoTitle.trim() !== '') {
 			todoService.addTodo(newTodoTitle);
 			todos = todoService.getTodos();
@@ -21,13 +22,13 @@
 		}
 	}
 
-	function toggleTodoCompleted(id: number) {
-		todoService.toggleTodoCompleted(id);
+	function toggleTodoCompleted(e: CustomEvent): void {
+		todoService.toggleTodoCompleted(e.detail);
 		todos = todoService.getTodos();
 	}
 
-	function removeTodo(id: number) {
-		todoService.removeTodo(id);
+	function removeTodo(e: CustomEvent) {
+		todoService.removeTodo(e.detail);
 		todos = todoService.getTodos();
 	}
 </script>
@@ -37,17 +38,4 @@
 <input type="text" placeholder="Enter a new todo..." bind:value={newTodoTitle} />
 <button on:click={addTodo}>Add Todo</button>
 
-<ul>
-	{#each todos as todo (todo.id)}
-		<li class={todo.completed ? 'completed' : ''} on:click={() => toggleTodoCompleted(todo.id)}>
-			{todo.title}
-			<button on:click={() => removeTodo(todo.id)}>X</button>
-		</li>
-	{/each}
-</ul>
-
-<style>
-	.completed {
-		text-decoration: line-through;
-	}
-</style>
+<TodoList {todos} on:toggle={toggleTodoCompleted} on:remove={removeTodo} />
